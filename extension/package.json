@@ -1,0 +1,29 @@
+{
+  "name": "codelens-ai",
+  "displayName": "CodeLens AI",
+  "description": "Real-time AI code review with bug detection and explanations",
+  "version": "0.0.1",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Linters"],
+  "activationEvents": ["onLanguage:c", "onLanguage:python", "onLanguage:javascript"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      { "command": "codelens.explainLine", "title": "CodeLens: Explain this line" },
+      { "command": "codelens.scanFile",    "title": "CodeLens: Scan this file" },
+      { "command": "codelens.clearAll",    "title": "CodeLens: Clear all highlights" }
+    ],
+    "configuration": {
+      "title": "CodeLens AI",
+      "properties": {
+        "codelens.backendUrl": {
+          "type": "string",
+          "default": "http://localhost:8000",
+          "description": "CodeLens backend URL"
+        }
+      }
+    }
+  },
+  "scripts": { "compile": "tsc -p ./", "watch": "tsc -watch -p ./" },
+  "devDependencies": { "@types/vscode": "^1.85.0", "typescript": "^5.0.0" }
+}

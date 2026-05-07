@@ -61,3 +61,50 @@ Review:"""
 
     fallback = f"LLM service unavailable. CNN detected risk score: {risk_score:.2f}. Please review manually."
     return {"comment": fallback, "prompt_type": "few_shot", "cached": False}
+
+def get_fix_from_llm(code: str, language: str) -> dict:
+    user_prompt = f"""You are an expert code fixer. The following {language} code has bugs, vulnerabilities, or bad practices.
+Please provide the corrected code.
+Format your response as a JSON object with two keys:
+1. "fixed_code": the fully corrected source code as a string (do not use markdown code blocks).
+2. "explanation": a short explanation of what was fixed.
+
+Code:
+{code}
+"""
+    
+    try:
+        headers = {
+            "Authorization": f"Bearer {settings.groq_api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": settings.llm_model_id,
+            "messages": [
+                {"role": "system", "content": "You are a code fixing assistant. Always respond with valid JSON containing 'fixed_code' and 'explanation'."},
+                {"role": "user", "content": user_prompt}
+            ],
+            "temperature": 0.2,
+            "response_format": {"type": "json_object"},
+            "max_tokens": 1024
+        }
+        
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload, timeout=15)
+        
+        if response.status_code == 200:
+            import json
+            res = response.json()
+            content = res["choices"][0]["message"]["content"]
+            try:
+                parsed = json.loads(content)
+                return {"fixed_code": parsed.get("fixed_code", ""), "explanation": parsed.get("explanation", "")}
+            except json.JSONDecodeError:
+                return {"fixed_code": code, "explanation": "Failed to parse JSON response."}
+        else:
+            logger.warning(f"Groq API returned status code {response.status_code}: {response.text}")
+            
+    except Exception as e:
+        logger.warning(f"LLM fix service call failed: {e}")
+
+    return {"fixed_code": code, "explanation": "LLM fix service unavailable."}

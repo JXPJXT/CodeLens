@@ -3,6 +3,11 @@
   "displayName": "CodeLens AI",
   "description": "Real-time AI code review with bug detection and explanations",
   "version": "0.0.1",
+  "publisher": "codelens",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/codelens.git"
+  },
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Linters"],
   "activationEvents": ["onLanguage:c", "onLanguage:python", "onLanguage:javascript"],
@@ -11,7 +16,8 @@
     "commands": [
       { "command": "codelens.explainLine", "title": "CodeLens: Explain this line" },
       { "command": "codelens.scanFile",    "title": "CodeLens: Scan this file" },
-      { "command": "codelens.clearAll",    "title": "CodeLens: Clear all highlights" }
+      { "command": "codelens.clearAll",    "title": "CodeLens: Clear all highlights" },
+      { "command": "codelens.fixCode",     "title": "CodeLens: Fix Code (Auto-Complete)" }
     ],
     "configuration": {
       "title": "CodeLens AI",

@@ -62,3 +62,22 @@ export async function sendFeedback(code: string, prediction: number, correct: bo
         // Silent fail
     }
 }
+
+export interface FixResponse {
+    fixed_code: string;
+    explanation: string;
+}
+
+export async function getFix(code: string, language: string): Promise<FixResponse | null> {
+    try {
+        const response = await fetch(`${getBackendUrl()}/fix/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, language })
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json() as FixResponse;
+    } catch (e: any) {
+        return null;
+    }
+}

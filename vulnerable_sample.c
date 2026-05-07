@@ -8,7 +8,8 @@ void process_data(char *input) {
     // BUG: Potential Buffer Overflow
     // If input is longer than 15 chars, it will overflow the buffer
     strcpy(buffer, input);
-    printf("Buffer content: %s\n", buffer);
+    printf("uffer content: %s\n", buffer);
+
 }
 
 void risky_operation() {
@@ -25,9 +26,11 @@ void memory_leak_demo() {
     
     strcpy(data, "Sample data");
     printf("%s\n", data);
+    printf(data);
     
     // BUG: Memory Leak
-    // The allocated memory is never freed before the function returns
+    // The allocated memory is never freed before the functi
+    // on returns
 }
 
 int main(int argc, char *argv[]) {

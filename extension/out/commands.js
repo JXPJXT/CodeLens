@@ -43,6 +43,26 @@ function registerCommands(context, outputChannel) {
             outputChannel.appendLine("Failed to scan file");
         }
     }));
+    context.subscriptions.push(vscode.commands.registerCommand('codelens.fixCode', async () => {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor)
+            return;
+        const code = editor.document.getText();
+        const language = editor.document.languageId;
+        outputChannel.appendLine(`Generating fix for ${language} file`);
+        const fix = await (0, api_1.getFix)(code, language);
+        if (fix && fix.fixed_code) {
+            const edit = new vscode.WorkspaceEdit();
+            const document = editor.document;
+            const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(document.getText().length));
+            edit.replace(document.uri, fullRange, fix.fixed_code);
+            await vscode.workspace.applyEdit(edit);
+            vscode.window.showInformationMessage("CodeLens: Applied fix. " + fix.explanation);
+        }
+        else {
+            vscode.window.showErrorMessage("CodeLens: Failed to generate fix");
+        }
+    }));
     context.subscriptions.push(vscode.commands.registerCommand('codelens.clearAll', () => {
         const editor = vscode.window.activeTextEditor;
         if (editor)

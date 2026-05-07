@@ -30,3 +30,4 @@ def analyze_with_heuristics(code: str, language: str) -> dict:
         "is_buggy": base_score >= 0.4,
         "risky_lines": sorted(risky, key=lambda x: x["score"], reverse=True)
     }
+        
